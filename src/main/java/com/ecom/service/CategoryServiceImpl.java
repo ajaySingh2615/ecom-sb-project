@@ -3,18 +3,25 @@ package com.ecom.service;
 import com.ecom.exceptions.APIException;
 import com.ecom.exceptions.ResourceNotFoundException;
 import com.ecom.model.Category;
+import com.ecom.payload.CategoryDTO;
 import com.ecom.payload.CategoryResponse;
 import com.ecom.repositories.CategoryRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -23,13 +30,18 @@ public class CategoryServiceImpl implements CategoryService {
         if (categories.isEmpty()) {
             throw new APIException("No categories found");
         }
-        return categories;
+        List<CategoryDTO> categoryDTOS = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                .toList();
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOS);
+        return categoryResponse;
     }
 
     @Override
     public void createCategory(Category category) {
         Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
-        if(savedCategory != null) {
+        if (savedCategory != null) {
             throw new APIException("Category with the name " + category.getCategoryName() + " already exists!!");
         }
         categoryRepository.save(category);
