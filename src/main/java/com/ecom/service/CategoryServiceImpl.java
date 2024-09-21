@@ -3,6 +3,7 @@ package com.ecom.service;
 import com.ecom.exceptions.APIException;
 import com.ecom.exceptions.ResourceNotFoundException;
 import com.ecom.model.Category;
+import com.ecom.payload.CategoryResponse;
 import com.ecom.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories.isEmpty()) {
             throw new APIException("No categories found");
