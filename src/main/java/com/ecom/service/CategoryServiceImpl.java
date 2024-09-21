@@ -1,10 +1,10 @@
 package com.ecom.service;
 
+import com.ecom.exceptions.APIException;
+import com.ecom.exceptions.ResourceNotFoundException;
 import com.ecom.model.Category;
 import com.ecom.repositories.CategoryRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,18 +18,26 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if (categories.isEmpty()) {
+            throw new APIException("No categories found");
+        }
+        return categories;
     }
 
     @Override
     public void createCategory(Category category) {
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory != null) {
+            throw new APIException("Category with the name " + category.getCategoryName() + " already exists!!");
+        }
         categoryRepository.save(category);
     }
 
     @Override
     public String deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         categoryRepository.delete(category);
         return "Category with id " + categoryId + " was deleted";
@@ -38,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category updateCategory(Category category, Long categoryId) {
         Category savedCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
