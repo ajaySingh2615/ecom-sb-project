@@ -1,11 +1,8 @@
 package com.ecom.service;
 
-import com.ecom.model.Category;
 import com.ecom.payload.CategoryDTO;
 import com.ecom.payload.CategoryResponse;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface CategoryService {
@@ -13,7 +10,7 @@ public interface CategoryService {
 
     CategoryDTO createCategory(CategoryDTO categoryDTO);
 
-    String deleteCategory(Long categoryId);
+    CategoryDTO deleteCategory(Long categoryId);
 
-    Category updateCategory(Category category, Long categoryId);
+    CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId);
 }
