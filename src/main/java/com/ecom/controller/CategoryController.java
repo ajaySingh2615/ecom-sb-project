@@ -1,5 +1,6 @@
 package com.ecom.controller;
 
+import com.ecom.config.AppConstants;
 import com.ecom.payload.CategoryDTO;
 import com.ecom.payload.CategoryResponse;
 import com.ecom.service.CategoryService;
@@ -14,18 +15,18 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/echo")
-    public ResponseEntity<String > echoMessage(@RequestParam(name = "message") String message){
-        return new ResponseEntity<>("Echo message : " + message, HttpStatus.OK);
-    }
-
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoryResponse = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortOrder
+    ) {
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
