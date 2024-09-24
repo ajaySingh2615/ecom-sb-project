@@ -1,9 +1,9 @@
 package com.ecom.controller;
 
 import com.ecom.config.AppConstants;
-import com.ecom.payload.CategoryDTO;
-import com.ecom.payload.CategoryResponse;
-import com.ecom.service.CategoryService;
+import com.ecom.payload.category.CategoryDTO;
+import com.ecom.payload.category.CategoryResponse;
+import com.ecom.service.category.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

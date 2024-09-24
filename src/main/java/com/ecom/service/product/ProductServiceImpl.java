@@ -1,4 +1,4 @@
-package com.ecom.service;
+package com.ecom.service.product;
 
 import org.springframework.stereotype.Service;
 

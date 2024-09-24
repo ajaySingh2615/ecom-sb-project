@@ -1,7 +1,7 @@
-package com.ecom.service;
+package com.ecom.service.category;
 
-import com.ecom.payload.CategoryDTO;
-import com.ecom.payload.CategoryResponse;
+import com.ecom.payload.category.CategoryDTO;
+import com.ecom.payload.category.CategoryResponse;
 import org.springframework.stereotype.Service;
 
 @Service

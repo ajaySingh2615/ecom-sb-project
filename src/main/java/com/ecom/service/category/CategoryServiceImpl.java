@@ -1,10 +1,10 @@
-package com.ecom.service;
+package com.ecom.service.category;
 
 import com.ecom.exceptions.APIException;
 import com.ecom.exceptions.ResourceNotFoundException;
 import com.ecom.model.Category;
-import com.ecom.payload.CategoryDTO;
-import com.ecom.payload.CategoryResponse;
+import com.ecom.payload.category.CategoryDTO;
+import com.ecom.payload.category.CategoryResponse;
 import com.ecom.repositories.CategoryRepository;
 
 import org.springframework.data.domain.Page;
