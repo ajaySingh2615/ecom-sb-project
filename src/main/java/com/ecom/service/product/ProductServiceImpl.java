@@ -4,10 +4,14 @@ import com.ecom.exceptions.ResourceNotFoundException;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.payload.product.ProductDTO;
+import com.ecom.payload.product.ProductResponse;
 import com.ecom.repositories.CategoryRepository;
 import com.ecom.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,5 +36,16 @@ public class ProductServiceImpl implements ProductService {
         product.setSpecialPrice(specialPrice);
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    @Override
+    public ProductResponse getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOS);
+        return productResponse;
     }
 }

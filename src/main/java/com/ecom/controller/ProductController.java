@@ -2,6 +2,7 @@ package com.ecom.controller;
 
 import com.ecom.model.Product;
 import com.ecom.payload.product.ProductDTO;
+import com.ecom.payload.product.ProductResponse;
 import com.ecom.service.product.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,11 @@ public class ProductController {
     ) {
         ProductDTO productDTO = productService.addProduct(categoryId, product);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> getAllProducts() {
+        ProductResponse productResponse = productService.getAllProducts();
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 }
