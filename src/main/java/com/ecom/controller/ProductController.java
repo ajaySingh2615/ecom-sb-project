@@ -3,6 +3,7 @@ package com.ecom.controller;
 import com.ecom.payload.product.ProductDTO;
 import com.ecom.payload.product.ProductResponse;
 import com.ecom.service.product.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class ProductController {
 
     @PostMapping("/admin/categories/{categoryId}/product")
     public ResponseEntity<ProductDTO> addProduct(
+            @Valid
             @RequestBody ProductDTO productDTO,
             @PathVariable Long categoryId
     ) {
@@ -49,6 +51,7 @@ public class ProductController {
 
     @PutMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(
+            @Valid
             @RequestBody ProductDTO productDTO,
             @PathVariable Long productId
     ) {
