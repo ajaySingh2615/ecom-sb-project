@@ -2,12 +2,16 @@ package com.ecom.service.product;
 
 import com.ecom.exceptions.APIException;
 import com.ecom.exceptions.ResourceNotFoundException;
+import com.ecom.model.Cart;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.payload.cart.CartDTO;
 import com.ecom.payload.product.ProductDTO;
 import com.ecom.payload.product.ProductResponse;
+import com.ecom.repositories.CartRepository;
 import com.ecom.repositories.CategoryRepository;
 import com.ecom.repositories.ProductRepository;
+import com.ecom.service.cart.CartService;
 import com.ecom.service.fileService.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -28,15 +33,19 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final FileService fileService;
+    private final CartRepository cartRepository;
+    private final CartService cartService;
 
     @Value("${project.image}")
     private String path;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, FileService fileService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, FileService fileService, CartRepository cartRepository, CartService cartService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.fileService = fileService;
+        this.cartRepository = cartRepository;
+        this.cartService = cartService;
     }
 
     @Override
@@ -177,6 +186,22 @@ public class ProductServiceImpl implements ProductService {
 
         // save to database
         Product saveProduct = productRepository.save(productFromDB);
+
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+            List<ProductDTO> products = cart.getCartItems().stream()
+                    .map(p -> modelMapper.map(p.getProduct(), ProductDTO.class)).collect(Collectors.toList());
+
+            cartDTO.setProducts(products);
+
+            return cartDTO;
+
+        }).toList();
+
+        cartDTOs.forEach(cart -> cartService.updateProductInCarts(cart.getCardId(), productId));
 
         return modelMapper.map(saveProduct, ProductDTO.class);
     }
