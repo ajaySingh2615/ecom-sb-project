@@ -10,6 +10,7 @@ import com.ecom.payload.product.ProductDTO;
 import com.ecom.repositories.CartRepository;
 import com.ecom.repositories.ProductRepository;
 
+import com.ecom.util.AuthUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCartId(), productId);
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCardId(), productId);
 
         if (cartItem != null) {
             throw new APIException("Product " + product.getProductName() + " already exists in the cart");
