@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 
 @Service
 public class CartServiceImpl implements CartService {
-
     private final CartRepository cartRepository;
     private final AuthUtil authUtil;
     private final ProductRepository productRepository;
@@ -109,6 +108,22 @@ public class CartServiceImpl implements CartService {
             return cartDTO;
 
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public CartDTO getCart(String emailId, Long cartId) {
+        Cart cart = cartRepository.findCartByEmailAndCartId(emailId, cartId);
+        if (cart == null) {
+            throw new ResourceNotFoundException("Cart", "cartId", cartId);
+        }
+
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        cart.getCartItems().forEach(cartItem -> cartItem.getProduct().setQuantity(cartItem.getQuantity()));
+        List<ProductDTO> products = cart.getCartItems()
+                .stream().map(p -> modelMapper.map(p.getProduct(), ProductDTO.class))
+                .toList();
+        cartDTO.setProducts(products);
+        return cartDTO;
     }
 
     private Cart createCart() {
