@@ -44,6 +44,5 @@ public class AddressController {
     public ResponseEntity<List<AddressDTO>> getAddresses() {
         List<AddressDTO> addressList = addressService.getAddresses();
         return new ResponseEntity<>(addressList, HttpStatus.OK);
-
     }
 }
