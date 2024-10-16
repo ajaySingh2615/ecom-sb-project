@@ -6,7 +6,6 @@ import com.ecom.model.User;
 import com.ecom.payload.address.AddressDTO;
 import com.ecom.repositories.AddressRepository;
 import com.ecom.repositories.UserRepository;
-import com.ecom.util.AuthUtil;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,11 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
     private final ModelMapper modelMapper;
     private final AddressRepository addressRepository;
-    private final AuthUtil authUtil;
     private final UserRepository userRepository;
 
-    public AddressServiceImpl(ModelMapper modelMapper, AddressRepository addressRepository, AuthUtil authUtil, UserRepository userRepository) {
+    public AddressServiceImpl(ModelMapper modelMapper, AddressRepository addressRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.addressRepository = addressRepository;
-        this.authUtil = authUtil;
         this.userRepository = userRepository;
     }
 
@@ -76,6 +73,7 @@ public class AddressServiceImpl implements AddressService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public AddressDTO updateAddress(Long addressId, AddressDTO addressDTO) {
         Address addressFromDatabase = addressRepository.findById(addressId)
@@ -86,7 +84,13 @@ public class AddressServiceImpl implements AddressService {
         addressFromDatabase.setCountry(addressDTO.getCountry());
         addressFromDatabase.setStreet(addressDTO.getStreet());
         addressFromDatabase.setBuildingName(addressDTO.getBuildingName());
-        return null;
+
+        Address updatedAddress = addressRepository.save(addressFromDatabase);
+        User user = addressFromDatabase.getUser();
+        user.getAddresses().removeIf(address -> address.getAddressId().equals(addressId));
+        user.getAddresses().add(updatedAddress);
+        userRepository.save(user);
+        return modelMapper.map(updatedAddress, AddressDTO.class);
     }
 
 }

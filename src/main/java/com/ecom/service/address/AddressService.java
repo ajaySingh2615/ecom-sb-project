@@ -16,5 +16,6 @@ public interface AddressService {
 
     List<AddressDTO> getUserAddresses(User user);
 
+    @Transactional
     AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
 }
