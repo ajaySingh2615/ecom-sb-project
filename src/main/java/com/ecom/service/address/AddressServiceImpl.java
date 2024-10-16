@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -75,6 +74,19 @@ public class AddressServiceImpl implements AddressService {
         return addresses.stream()
                 .map(address -> modelMapper.map(address, AddressDTO.class))
                 .toList();
+    }
+
+    @Override
+    public AddressDTO updateAddress(Long addressId, AddressDTO addressDTO) {
+        Address addressFromDatabase = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "id", addressId));
+        addressFromDatabase.setCityName(addressDTO.getCityName());
+        addressFromDatabase.setPincode(addressDTO.getPincode());
+        addressFromDatabase.setState(addressDTO.getState());
+        addressFromDatabase.setCountry(addressDTO.getCountry());
+        addressFromDatabase.setStreet(addressDTO.getStreet());
+        addressFromDatabase.setBuildingName(addressDTO.getBuildingName());
+        return null;
     }
 
 }
