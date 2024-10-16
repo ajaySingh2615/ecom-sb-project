@@ -9,11 +9,13 @@ import com.ecom.repositories.*;
 import com.ecom.service.cart.CartService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final AddressRepository addressRepository;
