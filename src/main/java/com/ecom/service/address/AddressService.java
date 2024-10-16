@@ -18,4 +18,6 @@ public interface AddressService {
 
     @Transactional
     AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
+
+    String deleteAddress(Long addressId);
 }
